@@ -1,43 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'task_repository.dart';
+part of 'task_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tasksRepositoryHash() => r'30ca992b18a6d5f613ab6dd3562da2ecb95f9250';
-
-/// See also [tasksRepository].
-@ProviderFor(tasksRepository)
-final tasksRepositoryProvider = AutoDisposeProvider<TaskRepository>.internal(
-  tasksRepository,
-  name: r'tasksRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$tasksRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef TasksRepositoryRef = AutoDisposeProviderRef<TaskRepository>;
-String _$taskListStreamHash() => r'6370fbcba63e3180b1cb43313977ad76f7fa6879';
-
-/// See also [taskListStream].
-@ProviderFor(taskListStream)
-final taskListStreamProvider =
-    AutoDisposeStreamProvider<List<AppTask>>.internal(
-  taskListStream,
-  name: r'taskListStreamProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$taskListStreamHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef TaskListStreamRef = AutoDisposeStreamProviderRef<List<AppTask>>;
-String _$taskListFutureHash() => r'41c8cc50058b90af9469af8744cbf5e972903eef';
+String _$taskListFutureHash() => r'72483d2f76889a584e1be1f00a40f3f955165419';
 
 /// See also [taskListFuture].
 @ProviderFor(taskListFuture)
@@ -53,7 +22,7 @@ final taskListFutureProvider =
 );
 
 typedef TaskListFutureRef = AutoDisposeFutureProviderRef<List<AppTask>>;
-String _$taskHash() => r'2c2a8e3417164c59ac125b24824a9760520d06c0';
+String _$taskHash() => r'd1636d1ae07627a0e35f4d83545579119bd57398';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -87,9 +56,11 @@ class TaskFamily extends Family<AsyncValue<AppTask?>> {
 
   /// See also [task].
   TaskProvider call(
+    List<AppTask> tasks,
     int id,
   ) {
     return TaskProvider(
+      tasks,
       id,
     );
   }
@@ -99,6 +70,7 @@ class TaskFamily extends Family<AsyncValue<AppTask?>> {
     covariant TaskProvider provider,
   ) {
     return call(
+      provider.tasks,
       provider.id,
     );
   }
@@ -122,10 +94,12 @@ class TaskFamily extends Family<AsyncValue<AppTask?>> {
 class TaskProvider extends AutoDisposeStreamProvider<AppTask?> {
   /// See also [task].
   TaskProvider(
+    List<AppTask> tasks,
     int id,
   ) : this._internal(
           (ref) => task(
             ref as TaskRef,
+            tasks,
             id,
           ),
           from: taskProvider,
@@ -134,6 +108,7 @@ class TaskProvider extends AutoDisposeStreamProvider<AppTask?> {
               const bool.fromEnvironment('dart.vm.product') ? null : _$taskHash,
           dependencies: TaskFamily._dependencies,
           allTransitiveDependencies: TaskFamily._allTransitiveDependencies,
+          tasks: tasks,
           id: id,
         );
 
@@ -144,9 +119,11 @@ class TaskProvider extends AutoDisposeStreamProvider<AppTask?> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
+    required this.tasks,
     required this.id,
   }) : super.internal();
 
+  final List<AppTask> tasks;
   final int id;
 
   @override
@@ -162,6 +139,7 @@ class TaskProvider extends AutoDisposeStreamProvider<AppTask?> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
+        tasks: tasks,
         id: id,
       ),
     );
@@ -174,12 +152,13 @@ class TaskProvider extends AutoDisposeStreamProvider<AppTask?> {
 
   @override
   bool operator ==(Object other) {
-    return other is TaskProvider && other.id == id;
+    return other is TaskProvider && other.tasks == tasks && other.id == id;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, tasks.hashCode);
     hash = _SystemHash.combine(hash, id.hashCode);
 
     return _SystemHash.finish(hash);
@@ -187,6 +166,9 @@ class TaskProvider extends AutoDisposeStreamProvider<AppTask?> {
 }
 
 mixin TaskRef on AutoDisposeStreamProviderRef<AppTask?> {
+  /// The parameter `tasks` of this provider.
+  List<AppTask> get tasks;
+
   /// The parameter `id` of this provider.
   int get id;
 }
@@ -195,6 +177,8 @@ class _TaskProviderElement extends AutoDisposeStreamProviderElement<AppTask?>
     with TaskRef {
   _TaskProviderElement(super.provider);
 
+  @override
+  List<AppTask> get tasks => (origin as TaskProvider).tasks;
   @override
   int get id => (origin as TaskProvider).id;
 }

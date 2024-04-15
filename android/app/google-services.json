@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "588989544561",
+    "firebase_url": "https://task-9f904-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "task-9f904",
+    "storage_bucket": "task-9f904.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:588989544561:android:73dd7aa088df77a66803d0",
+        "android_client_info": {
+          "package_name": "dev.mml.task"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC40NyTChKOb-tQyDaYGV7MmD-c3lDjA6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

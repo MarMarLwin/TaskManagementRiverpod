@@ -1,53 +1,77 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:task_management/src/features/authentication/data/auth_repository.dart';
-import 'package:task_management/src/features/task/data/task_repository.dart';
 import 'package:task_management/src/features/task/domain/task.dart';
+part 'task_service.g.dart';
 
 class TaskService {
   TaskService(this.ref);
   final Ref ref;
 
-  Future<List<AppTask>> fetchTasks() async {
-    final user = ref.read(authRepositoryProvider).currentUser;
-    if (user != null) {
-      return await ref.read(tasksRepositoryProvider).fetchTasksList();
+  Future<List<AppTask>> readTasks() async {
+    final authRepository = ref.watch(authRepositoryProvider);
+    final currentUser = authRepository.currentUser;
+    debugPrint('UUID =>${currentUser?.uid}');
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref().child('${currentUser?.uid}/');
+    final snapshot = await databaseReference.get();
+    final List<AppTask> taskList = [];
+    if (snapshot.exists) {
+      await AsyncValue.guard(() async {
+        final values = snapshot.value as List<Object?>;
+        for (var value in values) {
+          if (value != null) {
+            AppTask task = AppTask.fromJson(value.toString());
+            taskList.add(task);
+          }
+        }
+        return taskList;
+      });
     }
-    return [];
+    return taskList;
   }
 
-  Future<List<AppTask>> addTasks(AppTask task) async {
-    final user = ref.read(authRepositoryProvider).currentUser;
-    if (user != null) {
-      return await ref.read(tasksRepositoryProvider).addTask(task);
-    }
-    return [];
+  Stream<AppTask> getTask(List<AppTask> tasks, int id) {
+    final task = tasks.firstWhere((task) => task.id == id);
+
+    return Stream.value(task);
   }
-  // Future<void> _setCart(AppTask task) async {
-  //   final user = ref.read(authRepositoryProvider).currentUser;
-  //   if (user != null) {
-  //     return await ref.read(tasksRepositoryProvider).setCart(user.uid, cart);
-  //   }
-  // }
 
-  // Future<void> setItem(AppTeask item) async {
-  //   final cart = await _fetchTasks();
-  //   final updated = cart.setItem(item);
-  //   _setCart(updated);
-  // }
+  Future<void> writeTask(AppTask task) async {
+    final authRepository = ref.watch(authRepositoryProvider);
+    final currentUser = authRepository.currentUser;
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref().child('${currentUser?.uid}/${task.id}');
+    await AsyncValue.guard(() async {
+      await databaseReference.set(task.toJson());
+    });
+  }
 
-  // Future<void> addItem(Item item) async {
-  //   final cart = await _fetchCart();
-  //   final updated = cart.addItem(item);
-  //   _setCart(updated);
-  // }
+  Future<void> removeTask(AppTask task) async {
+    final authRepository = ref.watch(authRepositoryProvider);
+    final currentUser = authRepository.currentUser;
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref().child('${currentUser?.uid}/${task.id}');
 
-  // Future<void> removeItemById(ProductID id) async {
-  //   final cart = await _fetchCart();
-  //   final updated = cart.removeItemById(id);
-  //   await _setCart(updated);
-  // }
+    await databaseReference.remove();
+  }
 }
 
 final taskServiceProvider = Provider<TaskService>((ref) {
   return TaskService(ref);
 });
+
+@riverpod
+Future<List<AppTask>> taskListFuture(TaskListFutureRef ref) {
+  final taskService = ref.watch(taskServiceProvider);
+  return taskService.readTasks();
+}
+
+@riverpod
+Stream<AppTask?> task(TaskRef ref, List<AppTask> tasks, int id) {
+  final taskRepository = ref.watch(taskServiceProvider);
+
+  return taskRepository.getTask(tasks, id);
+}

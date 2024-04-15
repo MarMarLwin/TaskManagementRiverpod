@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:task_management/src/features/authentication/data/auth_repository.dart';
+import 'package:task_management/src/features/authentication/presentation/account/account/account_screen.dart';
 import 'package:task_management/src/features/authentication/presentation/sign_in/email_password_sign_in_form_type.dart';
 import 'package:task_management/src/features/authentication/presentation/sign_in/email_password_sign_in_screen.dart';
 import 'package:task_management/src/features/task/presentation/create_task/create_new_task.dart';
@@ -9,7 +10,7 @@ import 'package:task_management/src/routing/not_found_screen.dart';
 
 part 'app_router.g.dart';
 
-enum AppRoute { home, newTask, tasks, signIn, signUp }
+enum AppRoute { home, newTask, tasks, signIn, account }
 
 @Riverpod(keepAlive: true)
 GoRouter goRouter(GoRouterRef ref) {
@@ -55,6 +56,11 @@ GoRouter goRouter(GoRouterRef ref) {
                       id: taskId == 'new' ? null : int.parse(taskId));
                 },
               ),
+              GoRoute(
+                path: 'account',
+                name: AppRoute.account.name,
+                builder: (context, state) => const AccountScreen(),
+              )
             ],
           ),
         ],

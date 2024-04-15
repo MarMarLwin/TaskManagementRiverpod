@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:task_management/src/exceptions/app_exception.dart';
+import 'package:task_management/src/features/authentication/application/firebase_service.dart';
 import 'package:task_management/src/features/authentication/domain/app_user.dart';
 import 'package:task_management/src/utils/delay.dart';
 import 'package:task_management/src/utils/in_memory_store.dart';
@@ -15,57 +16,42 @@ class AuthRepository {
   AppUser? get currentUser => _authState.value;
 
   // List to keep track of all user accounts
-  final List<AppUser> _users = [];
+
+  final firebaseService = FirebaseService();
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     await delay(addDelay);
-    // check the given credentials agains each registered user
-    for (final u in _users) {
-      // matching email and password
-      if (u.email == email && u.password == password) {
-        _authState.value = u;
-        return;
-      }
-      // same email, wrong password
-      if (u.email == email && u.password != password) {
-        throw WrongPasswordException();
-      }
+
+    final user = await firebaseService.signInWithEmailPassword(email, password);
+    if (user != null) {
+      _authState.value = user;
+    } else {
+      throw UserNotFoundException();
     }
-    throw UserNotFoundException();
   }
 
   Future<void> createUserWithEmailAndPassword(
       String email, String password) async {
     await delay(addDelay);
-    // check if the email is already in use
-    for (final u in _users) {
-      if (u.email == email) {
-        throw EmailAlreadyInUseException();
-      }
-    }
+
     // minimum password length requirement
     if (password.length < 8) {
       throw WeakPasswordException();
     }
     // create new user
-    _createNewUser(email, password);
+    await _createNewUser(email, password);
   }
 
   Future<void> signOut() async {
     _authState.value = null;
+    await firebaseService.signOutWithPassword();
   }
 
   void dispose() => _authState.close();
 
-  void _createNewUser(String email, String password) {
-    // create new user
-    final user = AppUser(
-      uid: email.split('').reversed.join(),
-      email: email,
-      password: password,
-    );
-    // register it
-    _users.add(user);
+  Future<void> _createNewUser(String email, String password) async {
+    final user = await firebaseService.signUpWithEmailPassword(email, password);
+
     // update the auth state
     _authState.value = user;
   }

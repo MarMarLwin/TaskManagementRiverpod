@@ -29,10 +29,11 @@ class EmailPasswordSignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sign In')),
-      body: EmailPasswordSignInContents(
-        formType: formType,
+    return SafeArea(
+      child: Scaffold(
+        body: EmailPasswordSignInContents(
+          formType: formType,
+        ),
       ),
     );
   }
@@ -97,7 +98,7 @@ class _EmailPasswordSignInContentsState
       );
       if (success) {
         // widget.onSignedIn?.call();
-        context.goNamed(AppRoute.home.name);
+        context.replaceNamed(AppRoute.home.name);
       }
     }
   }
@@ -130,71 +131,80 @@ class _EmailPasswordSignInContentsState
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(emailPasswordSignInControllerProvider);
-    return ResponsiveScrollableCard(
-      child: FocusScope(
-        node: _node,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              gapH8,
-              // Email field
-              TextFormField(
-                key: EmailPasswordSignInScreen.emailKey,
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'test@test.com',
-                  enabled: !state.isLoading,
-                ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (email) =>
-                    !_submitted ? null : emailErrorText(email ?? ''),
-                autocorrect: false,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.emailAddress,
-                keyboardAppearance: Brightness.light,
-                onEditingComplete: () => _emailEditingComplete(),
-                inputFormatters: <TextInputFormatter>[
-                  ValidatorInputFormatter(
-                      editingValidator: EmailEditingRegexValidator()),
+    return Column(
+      children: [
+        SizedBox(
+          height: 200,
+          width: 200,
+          child: Image.asset('assets/images/task.png'),
+        ),
+        ResponsiveScrollableCard(
+          child: FocusScope(
+            node: _node,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  gapH8,
+                  // Email field
+                  TextFormField(
+                    key: EmailPasswordSignInScreen.emailKey,
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      hintText: 'test@test.com',
+                      enabled: !state.isLoading,
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (email) =>
+                        !_submitted ? null : emailErrorText(email ?? ''),
+                    autocorrect: false,
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
+                    keyboardAppearance: Brightness.light,
+                    onEditingComplete: () => _emailEditingComplete(),
+                    inputFormatters: <TextInputFormatter>[
+                      ValidatorInputFormatter(
+                          editingValidator: EmailEditingRegexValidator()),
+                    ],
+                  ),
+                  gapH8,
+                  // Password field
+                  TextFormField(
+                    key: EmailPasswordSignInScreen.passwordKey,
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: _formType.passwordLabelText,
+                      enabled: !state.isLoading,
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (password) => !_submitted
+                        ? null
+                        : passwordErrorText(password ?? '', _formType),
+                    obscureText: true,
+                    autocorrect: false,
+                    textInputAction: TextInputAction.done,
+                    keyboardAppearance: Brightness.light,
+                    onEditingComplete: () => _passwordEditingComplete(),
+                  ),
+                  gapH8,
+                  PrimaryButton(
+                    text: _formType.primaryButtonText,
+                    isLoading: state.isLoading,
+                    onPressed: state.isLoading ? null : () => _submit(),
+                  ),
+                  gapH8,
+                  CustomTextButton(
+                    text: _formType.secondaryButtonText,
+                    onPressed: state.isLoading ? null : _updateFormType,
+                  ),
                 ],
               ),
-              gapH8,
-              // Password field
-              TextFormField(
-                key: EmailPasswordSignInScreen.passwordKey,
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: _formType.passwordLabelText,
-                  enabled: !state.isLoading,
-                ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (password) => !_submitted
-                    ? null
-                    : passwordErrorText(password ?? '', _formType),
-                obscureText: true,
-                autocorrect: false,
-                textInputAction: TextInputAction.done,
-                keyboardAppearance: Brightness.light,
-                onEditingComplete: () => _passwordEditingComplete(),
-              ),
-              gapH8,
-              PrimaryButton(
-                text: _formType.primaryButtonText,
-                isLoading: state.isLoading,
-                onPressed: state.isLoading ? null : () => _submit(),
-              ),
-              gapH8,
-              CustomTextButton(
-                text: _formType.secondaryButtonText,
-                onPressed: state.isLoading ? null : _updateFormType,
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
