@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:task_management/src/features/authentication/data/auth_repository.dart';
-import 'package:task_management/src/features/authentication/presentation/account/account/account_screen.dart';
+import 'package:task_management/src/features/authentication/presentation/account/account_screen.dart';
 import 'package:task_management/src/features/authentication/presentation/sign_in/email_password_sign_in_form_type.dart';
 import 'package:task_management/src/features/authentication/presentation/sign_in/email_password_sign_in_screen.dart';
 import 'package:task_management/src/features/task/presentation/create_task/create_new_task.dart';
@@ -59,7 +60,10 @@ GoRouter goRouter(GoRouterRef ref) {
               GoRoute(
                 path: 'account',
                 name: AppRoute.account.name,
-                builder: (context, state) => const AccountScreen(),
+                pageBuilder: (context, state) {
+                  return const MaterialPage(
+                      fullscreenDialog: true, child: AccountScreen());
+                },
               )
             ],
           ),

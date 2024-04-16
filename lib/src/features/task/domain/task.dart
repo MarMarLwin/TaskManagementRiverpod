@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:task_management/src/features/task/domain/unique_id.dart';
+import 'package:hive/hive.dart';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+part 'task.g.dart';
+
 class AppTask {
   final int id;
   final String title;
@@ -74,4 +75,26 @@ class AppTask {
         description.hashCode ^
         dueDate.hashCode;
   }
+}
+
+@HiveType(typeId: 1)
+class TaskModel extends HiveObject {
+  @HiveField(0)
+  final String title;
+
+  @HiveField(1)
+  final String? description;
+
+  @HiveField(2)
+  final DateTime? dueDate;
+
+  @HiveField(3)
+  final bool isDone;
+
+  TaskModel({
+    required this.title,
+    required this.description,
+    required this.dueDate,
+    this.isDone = false,
+  });
 }

@@ -68,10 +68,6 @@ class _EmailPasswordSignInContentsState
   String get email => _emailController.text;
   String get password => _passwordController.text;
 
-  // local variable used to apply AutovalidateMode.onUserInteraction and show
-  // error hints only when the form has been submitted
-  // For more details on how this is implemented, see:
-  // https://codewithandrea.com/articles/flutter-text-field-form-validation/
   var _submitted = false;
   // track the formType as a local state variable
   late var _formType = widget.formType;
@@ -131,14 +127,12 @@ class _EmailPasswordSignInContentsState
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(emailPasswordSignInControllerProvider);
-    return Column(
-      children: [
-        SizedBox(
-          height: 200,
-          width: 200,
-          child: Image.asset('assets/images/task.png'),
-        ),
-        ResponsiveScrollableCard(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Center(
+        child: ResponsiveScrollableCard(
           child: FocusScope(
             node: _node,
             child: Form(
@@ -146,6 +140,17 @@ class _EmailPasswordSignInContentsState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
+                  SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: CircleAvatar(
+                          radius: 75,
+                          backgroundColor: Colors.white,
+                          child: Image.asset(
+                            'assets/images/task.png',
+                            fit: BoxFit.cover,
+                            alignment: Alignment.center,
+                          ))),
                   gapH8,
                   // Email field
                   TextFormField(
@@ -204,7 +209,7 @@ class _EmailPasswordSignInContentsState
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

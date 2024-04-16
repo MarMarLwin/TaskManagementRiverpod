@@ -15,13 +15,10 @@ Future<bool?> showAlertDialog({
 }) async {
   return showDialog(
     context: context,
-    // * Only make the dialog dismissible if there is a cancel button
     barrierDismissible: cancelActionText != null,
-    // * AlertDialog.adaptive was added in Flutter 3.13
     builder: (context) => AlertDialog.adaptive(
       title: Text(title),
       content: content != null ? Text(content) : null,
-      // * Use [TextButton] or [CupertinoDialogAction] depending on the platform
       actions: kIsWeb || !Platform.isIOS
           ? <Widget>[
               if (cancelActionText != null)
@@ -51,7 +48,6 @@ Future<bool?> showAlertDialog({
   );
 }
 
-/// Generic function to show a platform-aware Material or Cupertino error dialog
 Future<void> showExceptionAlertDialog({
   required BuildContext context,
   required String title,

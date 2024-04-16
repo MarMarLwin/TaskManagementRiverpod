@@ -3,11 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:task_management/src/common_widgets/action_text_button.dart';
 import 'package:task_management/src/common_widgets/alert_dialogs.dart';
-import 'package:task_management/src/common_widgets/responsive_center.dart';
 import 'package:task_management/src/common_widgets/responsive_scrollable_card.dart';
-import 'package:task_management/src/constant/app_sizes.dart';
 import 'package:task_management/src/features/authentication/data/auth_repository.dart';
-import 'package:task_management/src/features/authentication/presentation/account/account/account_controller.dart';
+import 'package:task_management/src/features/authentication/presentation/account/account_controller.dart';
 import 'package:task_management/src/routing/app_router.dart';
 import 'package:task_management/src/utils/async_value_ui.dart';
 
@@ -26,6 +24,7 @@ class AccountScreen extends ConsumerWidget {
         title: state.isLoading
             ? const CircularProgressIndicator()
             : const Text('Account'),
+        backgroundColor: Colors.purple,
         actions: [
           ActionTextButton(
             text: 'Logout',
@@ -78,12 +77,12 @@ class UserDataTable extends ConsumerWidget {
       ],
       rows: [
         _makeDataRow(
-          'uid',
+          'Uid',
           user?.uid ?? '',
           style,
         ),
         _makeDataRow(
-          'email',
+          'Email',
           user?.email ?? '',
           style,
         ),

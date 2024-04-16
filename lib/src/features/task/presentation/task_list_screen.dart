@@ -5,23 +5,46 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management/src/common_widgets/async_value_widget.dart';
 import 'package:task_management/src/common_widgets/empty_placeholder_widget.dart';
+import 'package:task_management/src/constant/app_sizes.dart';
+import 'package:task_management/src/features/task/application/notification_service.dart';
 import 'package:task_management/src/features/task/domain/task.dart';
+import 'package:task_management/src/features/task/presentation/hive_controller.dart';
 import 'package:task_management/src/features/task/presentation/task_controller.dart';
 import 'package:task_management/src/routing/app_router.dart';
 
-class TaskListScreen extends ConsumerWidget {
+class TaskListScreen extends ConsumerStatefulWidget {
   const TaskListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _TaskListScreenState();
+}
+
+class _TaskListScreenState extends ConsumerState<TaskListScreen> {
+  NotificationService notificationService = NotificationService();
+  TaskBox taskBox = TaskBox();
+
+  bool isDone = false;
+
+  @override
+  void initState() {
+    notificationService.init();
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final taskList = ref.watch(taskControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Colors.purple,
         title: const Text('My Tasks'),
         actions: [
           InkWell(
-              child: const Icon(Icons.account_circle),
+              child: const Padding(
+                padding: EdgeInsets.all(Sizes.p12),
+                child: Icon(Icons.account_circle),
+              ),
               onTap: () {
                 context.goNamed(AppRoute.account.name);
               })
@@ -46,21 +69,24 @@ class TaskListScreen extends ConsumerWidget {
                             extentRatio: 0.2,
                             children: [
                               SlidableAction(
-                                onPressed: (context) {
-                                  ref
-                                      .watch(taskControllerProvider.notifier)
-                                      .removeTask(tasks[index]);
-                                },
-                                icon: Icons.close,
-                                foregroundColor: Colors.white,
-                                backgroundColor: Colors.black,
-                                borderRadius: BorderRadius.circular(10),
-                              )
+                                  onPressed: (context) {
+                                    notificationService
+                                        .cancelNotification(task.id);
+
+                                    taskBox.deleteReminder(task.id);
+                                    ref
+                                        .watch(taskControllerProvider.notifier)
+                                        .removeTask(task);
+                                  },
+                                  icon: Icons.close,
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.black,
+                                  borderRadius: BorderRadius.circular(10))
                             ],
                           ),
                           child: InkWell(
                             onTap: () {
-                              context.goNamed(AppRoute.newTask.name,
+                              context.pushNamed(AppRoute.newTask.name,
                                   pathParameters: {'id': task.id.toString()});
                             },
                             child: Card(
@@ -81,22 +107,24 @@ class TaskListScreen extends ConsumerWidget {
                                     )
                                   ],
                                 ),
-                                trailing: const Icon(Icons.menu),
+                                // trailing: Checkbox(onChanged: (value) {
+
+                                // }, value: task.)
                               ),
                             ),
                           ),
                         );
                       },
                       onReorder: (int oldIndex, int newIndex) {
-                        // setState(() {
-                        //   if (newIndex > oldIndex) {
-                        //     newIndex--;
-                        //   }
-                        //   debugPrint('$oldIndex => $newIndex');
-                        //   final item = items.removeAt(oldIndex);
+                        setState(() {
+                          if (newIndex > oldIndex) {
+                            newIndex--;
+                          }
+                          debugPrint('$oldIndex => $newIndex');
+                          final item = tasks.removeAt(oldIndex);
 
-                        //   items.insert(newIndex, item);
-                        // });
+                          tasks.insert(newIndex, item);
+                        });
                       },
                     ),
                   ),
@@ -107,7 +135,7 @@ class TaskListScreen extends ConsumerWidget {
         },
         tooltip: 'Add new task',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

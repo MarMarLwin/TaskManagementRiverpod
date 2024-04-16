@@ -3,12 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:task_management/src/features/authentication/data/auth_repository.dart';
+import 'package:task_management/src/features/task/application/notification_service.dart';
 import 'package:task_management/src/features/task/domain/task.dart';
+import 'package:task_management/src/features/task/presentation/hive_controller.dart';
 part 'task_service.g.dart';
+
+enum ReminderRepeat {
+  never,
+  daily,
+  weekly,
+  monthly,
+  yearly,
+}
 
 class TaskService {
   TaskService(this.ref);
   final Ref ref;
+
+  ReminderRepeat _reminderRepeat = ReminderRepeat.never;
+  ReminderRepeat get reminderRepeat => _reminderRepeat;
+
+  final NotificationService _notificationService = NotificationService();
+  final TaskBox _taskBox = TaskBox();
 
   Future<List<AppTask>> readTasks() async {
     final authRepository = ref.watch(authRepositoryProvider);
@@ -56,6 +72,29 @@ class TaskService {
         FirebaseDatabase.instance.ref().child('${currentUser?.uid}/${task.id}');
 
     await databaseReference.remove();
+  }
+
+  void setReminderRepeat(ReminderRepeat reminderRepeat) {
+    _reminderRepeat = reminderRepeat;
+  }
+
+  void handleSavingReminder(
+      {bool isEdit = false, required dynamic key, TaskModel? task}) {
+    // creating reminder
+    if (!isEdit) {
+      _taskBox.insertReminder(task!);
+      if (task.dueDate != null) {
+        _notificationService.scheduleNotification(task);
+      }
+    }
+
+    // updating reminder
+    if (isEdit) {
+      _taskBox.updateReminder(key, task!);
+      if (task.dueDate != null) {
+        _notificationService.scheduleNotification(task);
+      }
+    }
   }
 }
 
