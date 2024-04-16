@@ -79,9 +79,9 @@ class TaskService {
   }
 
   void handleSavingReminder(
-      {bool isEdit = false, required dynamic key, TaskModel? task}) {
+      {bool isDone = false, required dynamic key, TaskModel? task}) {
     // creating reminder
-    if (!isEdit) {
+    if (!isDone) {
       _taskBox.insertReminder(task!);
       if (task.dueDate != null) {
         _notificationService.scheduleNotification(task);
@@ -89,11 +89,9 @@ class TaskService {
     }
 
     // updating reminder
-    if (isEdit) {
+    if (isDone) {
       _taskBox.updateReminder(key, task!);
-      if (task.dueDate != null) {
-        _notificationService.scheduleNotification(task);
-      }
+      _notificationService.cancelNotification(task.key);
     }
   }
 }

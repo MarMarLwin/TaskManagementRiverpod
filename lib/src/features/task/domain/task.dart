@@ -9,25 +9,26 @@ class AppTask {
   final String title;
   final String description;
   final DateTime dueDate;
-  const AppTask({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.dueDate,
-  });
+  final bool isDone;
+  const AppTask(
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.dueDate,
+      required this.isDone});
 
-  AppTask copyWith({
-    int? id,
-    String? title,
-    String? description,
-    DateTime? dueDate,
-  }) {
+  AppTask copyWith(
+      {int? id,
+      String? title,
+      String? description,
+      DateTime? dueDate,
+      bool? isDone}) {
     return AppTask(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      dueDate: dueDate ?? this.dueDate,
-    );
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        dueDate: dueDate ?? this.dueDate,
+        isDone: isDone ?? this.isDone);
   }
 
   Map<String, dynamic> toMap() {
@@ -36,16 +37,17 @@ class AppTask {
       'title': title,
       'description': description,
       'dueDate': dueDate.millisecondsSinceEpoch,
+      'isDone': isDone
     };
   }
 
   factory AppTask.fromMap(Map<String, dynamic> map) {
     return AppTask(
-      id: map['id'] as int,
-      title: map['title'] as String,
-      description: map['description'] as String,
-      dueDate: DateTime.fromMillisecondsSinceEpoch(map['dueDate'] as int),
-    );
+        id: map['id'] as int,
+        title: map['title'] as String,
+        description: map['description'] as String,
+        dueDate: DateTime.fromMillisecondsSinceEpoch(map['dueDate'] as int),
+        isDone: map['isDone'] as bool);
   }
 
   String toJson() => json.encode(toMap());
@@ -55,7 +57,7 @@ class AppTask {
 
   @override
   String toString() {
-    return 'AppTask(id: $id, title: $title, description: $description, dueDate: $dueDate)';
+    return 'AppTask(id: $id, title: $title, description: $description, dueDate: $dueDate, isDone:$isDone)';
   }
 
   @override
@@ -65,7 +67,8 @@ class AppTask {
     return other.id == id &&
         other.title == title &&
         other.description == description &&
-        other.dueDate == dueDate;
+        other.dueDate == dueDate &&
+        other.isDone == isDone;
   }
 
   @override
@@ -73,7 +76,8 @@ class AppTask {
     return id.hashCode ^
         title.hashCode ^
         description.hashCode ^
-        dueDate.hashCode;
+        dueDate.hashCode ^
+        isDone.hashCode;
   }
 }
 
@@ -95,6 +99,6 @@ class TaskModel extends HiveObject {
     required this.title,
     required this.description,
     required this.dueDate,
-    this.isDone = false,
+    required this.isDone,
   });
 }

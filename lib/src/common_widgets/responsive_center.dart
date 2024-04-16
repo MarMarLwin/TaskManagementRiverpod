@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_management/src/constant/breakpoints.dart';
 
-/// Reusable widget for showing a child with a maximum content width constraint.
-/// If available width is larger than the maximum width, the child will be
-/// centered.
-/// If available width is smaller than the maximum width, the child use all the
-/// available width.
 class ResponsiveCenter extends StatelessWidget {
   const ResponsiveCenter({
     super.key,

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -53,7 +52,6 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                     titleController.text = taskValue?.title ?? '';
                     descriptionController.text = taskValue?.description ?? '';
                     _defaultDateTime = taskValue?.dueDate ?? DateTime.now();
-                    debugPrint('Change Date ${_selectedDate.toString()}');
                   }
                   return Form(
                     key: _formKey,
@@ -141,15 +139,15 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                             text: widget.id != null ? 'Update' : 'Create',
                             onPressed: () {
                               var task = AppTask(
-                                id: widget.id ?? tasks.length + 1,
-                                title: titleController.text,
-                                description: descriptionController.text,
-                                dueDate: _selectedDate,
-                              );
+                                  id: widget.id ?? tasks.length + 1,
+                                  title: titleController.text,
+                                  description: descriptionController.text,
+                                  dueDate: _selectedDate,
+                                  isDone: false);
 
                               ref
                                   .watch(taskControllerProvider.notifier)
-                                  .addTask(task);
+                                  .addOrUpdateTask(task);
                               context.pop();
                             },
                           )

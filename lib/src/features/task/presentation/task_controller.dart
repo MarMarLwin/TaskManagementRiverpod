@@ -17,7 +17,7 @@ class TaskController extends StateNotifier<AsyncValue<List<AppTask>>> {
     });
   }
 
-  Future<void> addTask(AppTask task) async {
+  Future<void> addOrUpdateTask(AppTask task) async {
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
@@ -25,10 +25,12 @@ class TaskController extends StateNotifier<AsyncValue<List<AppTask>>> {
           title: task.title,
           description: task.description,
           dueDate: task.dueDate,
-          isDone: false);
-      taskService.handleSavingReminder(key: task.id, task: appTask);
+          isDone: task.isDone);
+      taskService.handleSavingReminder(
+          isDone: task.isDone, key: task.id, task: appTask);
       await taskService.writeTask(task);
       final taskList = await taskService.readTasks();
+
       return taskList;
     });
   }

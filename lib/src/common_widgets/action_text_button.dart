@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_management/src/constant/app_sizes.dart';
 
-/// Text button to be used as an [AppBar] action
 class ActionTextButton extends StatelessWidget {
   const ActionTextButton({super.key, required this.text, this.onPressed});
   final String text;

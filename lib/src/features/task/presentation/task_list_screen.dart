@@ -80,7 +80,8 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
                                   },
                                   icon: Icons.close,
                                   foregroundColor: Colors.white,
-                                  backgroundColor: Colors.black,
+                                  backgroundColor:
+                                      Colors.purpleAccent.withOpacity(0.5),
                                   borderRadius: BorderRadius.circular(10))
                             ],
                           ),
@@ -91,26 +92,37 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
                             },
                             child: Card(
                               child: ListTile(
-                                title: Text(task.title),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(task.description),
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.timer, size: 30),
-                                        Text(DateFormat('dd/MM/yyyy hh:mm')
-                                            .format(task.dueDate))
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                // trailing: Checkbox(onChanged: (value) {
-
-                                // }, value: task.)
-                              ),
+                                  title: Text(task.title),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(task.description),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.timer, size: 30),
+                                          Text(DateFormat('dd/MM/yyyy hh:mm')
+                                              .format(task.dueDate))
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  trailing: Checkbox(
+                                      onChanged: (value) {
+                                        final appTask = AppTask(
+                                            id: task.id,
+                                            title: task.title,
+                                            description: task.description,
+                                            isDone: value!,
+                                            dueDate: task.dueDate);
+                                        ref
+                                            .watch(
+                                                taskControllerProvider.notifier)
+                                            .addOrUpdateTask(appTask);
+                                      },
+                                      value: task.isDone)),
                             ),
                           ),
                         );
