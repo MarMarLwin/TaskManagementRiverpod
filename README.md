@@ -2,15 +2,15 @@
 
 This app is personal task management system. You can create, edit and delete by signup. And you can pritiorize your tasks.
 
-## Getting Started
+If you don't have an account, you can create account with email and password.
 
-This project is a starting point for a Flutter application.
+This project is developed with firebase real time database and authentication.
+When the task is on due datetime, the reminder notification will appear.
 
-A few resources to get you started if this is your first Flutter project:
+For demo test for this app, you can use 
+email - mml@test.com
+password - 12345678
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
