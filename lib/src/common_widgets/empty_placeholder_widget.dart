@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:task_management/src/common_widgets/primary_button.dart';
 import 'package:task_management/src/constant/app_sizes.dart';
-import 'package:task_management/src/routing/app_router.dart';
 
 /// Placeholder widget showing a message and CTA to go back to the home screen.
 class EmptyPlaceholderWidget extends StatelessWidget {
@@ -24,10 +21,10 @@ class EmptyPlaceholderWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             gapH32,
-            PrimaryButton(
-              onPressed: () => context.goNamed(AppRoute.home.name),
-              text: 'Go Home',
-            )
+            // PrimaryButton(
+            //   onPressed: () => context.goNamed(AppRoute.home.name),
+            //   text: 'Go Home',
+            // )
           ],
         ),
       ),
